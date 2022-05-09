@@ -1,7 +1,7 @@
 // TODO: Include packages needed for this application
 const inquirer = require('inquirer');
 const fs = require('fs');
-const generateReadMe = require('./src/readme-template.js');
+const generateReadMe = require('./utils/generateMarkdown');
 // TODO: Create an array of questions for user input
 const questions = [
     {
@@ -91,21 +91,23 @@ const questions = [
     }
 ];
 
-// TODO: Create a function to write README file
-function writeFile(fileContent) {
-    return new Promise((resolve, reject) => {
-        fs.writeFile('./dist/README.md', fileContent, function(err) {
-           if (err) {
-                return;
-            }
-
-            resolve({
-                ok: true,
-                message: 'File Created!'
-            }); 
-        });
-        
-    });
-};
-
+//function to write README file
+function writeToFile(data) {
+    fs.writeFile('./dist/README.md', data, function(err) {
+        // If there is an error console log it otherwise notify success.
+        if (err) {
+            return console.log(err)
+        } else {
+            console.log("File Created! Check Dist Folder for Output.")
+        }
+    })
+}
 // TODO: Create a function to initialize app
+function init() {
+    inquirer.prompt(questions)
+        .then(function(data) {
+            writeToFile(generateReadMe(data));
+        })
+}
+
+init();
